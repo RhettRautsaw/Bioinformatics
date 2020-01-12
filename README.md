@@ -1,4 +1,4 @@
-# Bioinformatic_Scripts
+# Bioinformatic Scripts
 A repository of potentially useful bioinformatics scripts.
 
 **Scripts**:
