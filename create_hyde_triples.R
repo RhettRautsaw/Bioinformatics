@@ -13,7 +13,7 @@ create_hyde_triples<-function(populations) {
   for(i in 1:nrow(triples)){
     if(any(duplicated(as.character(triples[i,]))==TRUE)){
       dups<-c(dups,i)
-      }
+    }
     else{}
   }
   triples<-triples[-dups,]
