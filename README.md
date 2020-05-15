@@ -1,5 +1,5 @@
 # Bioinformatic Scripts
-A repository of potentially useful bioinformatics scripts.
+A repository of simple, but potentially useful bioinformatics scripts.
 
 **Scripts**:
 
