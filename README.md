@@ -7,3 +7,4 @@ A repository of potentially useful bioinformatics scripts.
 - **`create_pairwise_combos.R`**: R function to create a file of all possible pairwise comparisons given vector of options
 - **`Linearize.py`**: Python script which takes multiline fasta and makes it a single-line fasta
 - **`RemoveStop.py`**: Python script which takes a transcriptome fasta and removes the last three base pairs (*i.e.*, stop codon)
+- **`RenameDups.py`**: Python script which takes a fasta file and searches for duplicate sequence IDs, adding a unique index if found.
