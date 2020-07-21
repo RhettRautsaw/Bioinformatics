@@ -9,3 +9,7 @@ A repository of simple, but potentially useful bioinformatics scripts.
 - **`RemoveDups.py`**: Python script which takes a fasta file and removes sequences with duplicate names (keeping the first sequence it encounters).
 - **`RemoveStop.py`**: Python script which takes a transcriptome fasta and removes the last three base pairs (*i.e.*, stop codon).
 - **`RenameDups.py`**: Python script which takes a fasta file and searches for duplicate sequence IDs, adding a unique index if found.
+
+**Useful Functions:
+
+- **Parallel Compress Directory**: `tar -cvf - directory | pigz -9 -p 20 > directory_archive.tar.gz`
