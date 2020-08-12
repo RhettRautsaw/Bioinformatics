@@ -1,4 +1,4 @@
-# Bioinformatic Scripts & Resources
+# Bioinformatics
 ## Rhett M. Rautsaw
 This repository contains many simple, but potentially useful bioinformatics scripts as well as functions and resources for improving your skillset and performing really cool analyses.
 
