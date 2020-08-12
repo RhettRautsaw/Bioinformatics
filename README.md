@@ -17,7 +17,7 @@ This repository contains many simple, but potentially useful bioinformatics scri
 - Parallel Compress Directory:
 	- `tar -cvf - directory | pigz -9 -p 20 > directory_archive.tar.gz`
 
-## General Bioinformatic Resources
+## Scripting Resources
 
 - [Scripting OS X](https://scriptingosx.com/witchcraft/)
 	- [Moving to zsh](https://scriptingosx.com/2019/06/moving-to-zsh/)
