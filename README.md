@@ -16,6 +16,8 @@ This repository contains many simple, but potentially useful bioinformatics scri
 ### UNIX
 - Parallel Compress Directory:
 	- `tar -cvf - directory | pigz -9 -p 20 > directory_archive.tar.gz`
+- Recursively Find File by Name and Remove:
+	- `find . -name "name*" -exec rm {} +`
 
 ## Scripting Resources
 
