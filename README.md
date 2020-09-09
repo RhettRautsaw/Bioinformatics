@@ -18,6 +18,13 @@ This repository contains many simple, but potentially useful bioinformatics scri
 	- `tar -cvf - directory | pigz -9 -p 20 > directory_archive.tar.gz`
 - Recursively Find File by Name and Remove:
 	- `find . -name "name*" -exec rm {} +`
+- List file hosted on remote https
+	- `lftp -u username,password\!\! https://www.website.com`
+	- `du -a > manifest.txt`
+
+### Excel/Google Sheets
+- VLOOKUP concatenate multiple matches
+	- ArrayFormula(TEXTJOIN("; ", TRUE, IF(A1=AnotherSheet!B:B, D:D, "")))
 
 ## Scripting Resources
 
