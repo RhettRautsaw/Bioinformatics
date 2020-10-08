@@ -63,22 +63,9 @@ occ_cleaner<-function(points, ranges, tree, maxdist=50000, k=20, parallel=4, max
     
     overlap<-cbind(points2,overlap)
     rownames(overlap) <- NULL
-    # overlap<-as.data.frame(st_join(points, ranges, join=st_nn, k=k, maxdist=maxdist, parallel=parallel)) 
-    # dist$dist[!sapply(dist$dist, length)] <- NA  
-    # overlap$geoDist<-unlist(dist$dist)
-  
+
   # Calculate Phylogenetic Divergence
     print("Calculating Phylogenetic Divergence between recorded and overlapping species")
-    # pb = txtProgressBar(min = 0, max = nrow(overlap), initial = 0)
-    # for(i in 1:nrow(overlap)){
-    #   setTxtProgressBar(pb,i)
-    #   if(overlap[i,pt_species] %in% tree$tip.label & overlap[i,range_species] %in% tree$tip.label){
-    #     overlap$phyDist[i]<-fastDist(tree,overlap[i,pt_species], overlap[i,range_species])/2
-    #   }else{
-    #     overlap$phyDist[i]<-NA
-    #   }
-    # }
-    
     registerDoParallel(parallel-2)
     tmp<-foreach(i=1:nrow(overlap), .combine=rbind) %dopar% {
       if(overlap[i,pt_species] %in% tree$tip.label & overlap[i,range_species] %in% tree$tip.label){
@@ -100,13 +87,16 @@ occ_cleaner<-function(points, ranges, tree, maxdist=50000, k=20, parallel=4, max
     print("Scaling geographic and phylogenetic distance for each point")
     print("Ranking to determine best species ID for each point")
     print(paste0("Flagging points with multiple hits or with a phylogenetic divergence greater than ", maxphydist))
-    overlap2<-overlap %>% group_by_(pt_id) %>% mutate(geoDist_scale=scale(geoDist+1,center=F),
-                                                      phyDist_scale=scale(phyDist+1,center=F),
-                                                      totDist=geoDist_scale+phyDist_scale) %>% 
-                                               filter(rank(totDist) < 2) %>%
+    overlap2<-overlap %>% group_by_(pt_id) %>% mutate(geoRank=rank(round(geoDist), ties.method = "max"),
+                                                      phyRank=rank(round(phyDist), ties.method = "max"),
+                                                      totRank=rank(geoRank+phyRank)) %>%
+                                               filter(totRank==min(totRank)) %>%
                                                mutate(n=n(),
-                                                      flag=if_else((n>1 | phyDist>maxphydist), "yes", "no"))
-  
+                                                      flag=if_else((n>1 | phyDist>maxphydist), "yes", "no")) %>%
+                                               filter(phyDist==min(phyDist)) %>%
+                                               mutate(n=n(),
+                                                      flag=if_else((phyDist==0 & flag=="yes"), "geoDist", flag)) %>%
+                                               ungroup() %>% dplyr::select(-geoRank, -phyRank, -totRank)
   
   return(overlap2)
 }

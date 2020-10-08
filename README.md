@@ -34,6 +34,7 @@ This repository contains many simple, but potentially useful bioinformatics scri
 - [Scripting OS X](https://scriptingosx.com/witchcraft/)
 	- [Moving to zsh](https://scriptingosx.com/2019/06/moving-to-zsh/)
 	- [OhMyZsh](https://ohmyz.sh/)
+	- [Zsh Prompt Expansion](http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html)
 
 ## Analysis Resources
 
