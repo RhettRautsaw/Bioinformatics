@@ -11,7 +11,7 @@ from Bio.SeqIO import FastaIO
 
 parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter, description='Removes the last three nucleotides (i.e. stop codon) from sequences. \n\n\
 ::CITE:: \n\
-https://github.com/reptilerhett/Bioinformatic-Scripts\n\n')
+https://github.com/RhettRautsaw/Bioinformatics\n\n')
 
 ###############################################
 

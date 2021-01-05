@@ -17,7 +17,7 @@ Linearize your damn fastas...who uses multi-line fastas...you people are monster
 Yep, multi-line fastas are better when working with giant genomes...alright... -w will wrap those up for you.
 
 ::CITE:: 
-https://github.com/reptilerhett/Bioinformatic-Scripts\n\n
+https://github.com/RhettRautsaw/Bioinformatics\n\n
 """)
 
 ###############################################

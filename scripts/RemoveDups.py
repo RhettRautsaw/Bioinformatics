@@ -12,7 +12,7 @@ from Bio.SeqIO import FastaIO
 parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter, description='RemoveDups.py\n\n\
 This script will cycle through a fasta file and search for duplicate sequence IDs. If found, it will keep the first sequence it encounters\n\n\
 ::CITE:: \n\
-https://github.com/reptilerhett/Bioinformatic-Scripts\n\n')
+https://github.com/RhettRautsaw/Bioinformatics\n\n')
 
 ###############################################
 

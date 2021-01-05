@@ -7,7 +7,7 @@ import subprocess
 
 parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter, description='This script is designed to take a .mov formatted screen recording or video and transform it into a gif. Requires installation of ffmpeg and gifsicle which can be installed via Anaconda. \n\n\
 ::CITE:: \n\
-https://github.com/reptilerhett/RandomScripts\n\n')
+https://github.com/RhettRautsaw/Bioinformatics\n\n')
 
 ###############################################
 
