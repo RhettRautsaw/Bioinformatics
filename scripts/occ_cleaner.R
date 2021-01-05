@@ -87,7 +87,7 @@ occ_cleaner<-function(points, ranges, tree, maxdist=50000, k=20, parallel=4, max
     print("Scaling geographic and phylogenetic distance for each point")
     print("Ranking to determine best species ID for each point")
     print(paste0("Flagging points with multiple hits or with a phylogenetic divergence greater than ", maxphydist))
-    overlap2<-overlap %>% group_by_(pt_id) %>% mutate(geoRank=rank(round(geoDist), ties.method = "max"),
+    overlap2<-overlap %>% group_by_(pt_id) %>% mutate(geoRank=rank(round(geoDist,2), ties.method = "max"),
                                                       phyRank=rank(round(phyDist), ties.method = "max"),
                                                       totRank=rank(geoRank+phyRank)) %>%
                                                filter(totRank==min(totRank)) %>%
@@ -95,7 +95,7 @@ occ_cleaner<-function(points, ranges, tree, maxdist=50000, k=20, parallel=4, max
                                                       flag=if_else((n>1 | phyDist>maxphydist), "yes", "no")) %>%
                                                filter(phyDist==min(phyDist)) %>%
                                                mutate(n=n(),
-                                                      flag=if_else((phyDist==0 & flag=="yes"), "geoDist", flag)) %>%
+                                                      flag=if_else((phyDist==0 & geoDist > 0), "geoDist", flag)) %>%
                                                ungroup() %>% dplyr::select(-geoRank, -phyRank, -totRank)
   
   return(overlap2)

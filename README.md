@@ -13,6 +13,11 @@ This repository contains many simple, but potentially useful bioinformatics scri
 - **`RemoveDups.py`**: Python script which takes a fasta file and removes sequences with duplicate names (keeping the first sequence it encounters).
 - **`RemoveStop.py`**: Python script which takes a transcriptome fasta and removes the last three base pairs (*i.e.*, stop codon).
 - **`RenameDups.py`**: Python script which takes a fasta file and searches for duplicate sequence IDs, adding a unique index if found.
+- **`SCP_Deliver.py`**: Python script that remembers scp formatting for you. 
+
+## Stolen Scripts
+- **`Fasta_Renamer.py`**: Python script to rename fasta files sequentially. Stolen from Andrew Mason ([https://github.com/masonaj157](https://github.com/masonaj157))
+- **`RemDupRemAmb.py`**: Python script to remove sequences with ambiguities or duplicates. Stolen from Andrew Mason ([https://github.com/masonaj157](https://github.com/masonaj157))
 
 ## Functions
 
@@ -27,7 +32,7 @@ This repository contains many simple, but potentially useful bioinformatics scri
 
 ### Excel/Google Sheets
 - VLOOKUP concatenate multiple matches
-	- ArrayFormula(TEXTJOIN("; ", TRUE, IF(A1=AnotherSheet!B:B, D:D, "")))
+	- `ArrayFormula(TEXTJOIN("; ", TRUE, IF(A1=AnotherSheet!B:B, D:D, "")))`
 
 ## Scripting Resources
 
@@ -46,3 +51,4 @@ This repository contains many simple, but potentially useful bioinformatics scri
 - [ENMeval](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261)
 	- [Vignette](https://cran.r-project.org/web/packages/ENMeval/vignettes/ENMeval-vignette.html)
 - [kuenm](https://peerj.com/articles/6281/)
+- https://www.robertlanfear.com/blog/files/short_read_mappers.html
