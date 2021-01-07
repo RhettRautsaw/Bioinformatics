@@ -4,6 +4,7 @@ This repository contains many simple, but potentially useful bioinformatics scri
 
 ## Scripts
 
+- **`Busco_cleaner.py`**: Python script that will test if the "multi_copy_busco_sequences" are actually multi-copy or if they are actually duplicates. If there is only one unique sequence, that sequence will moved to "single_copy_busco_sequences"
 - **`create_hyde_triples.R`**: R function to create a file of all possible triples for [HyDe](https://github.com/pblischak/HyDe). *triple* = parent_1 --> hybrid <-- parent_2
 - **`create_pairwise_combos.R`**: R function to create a file of all possible pairwise comparisons given vector of options.
 - **`gif_maker.py`**: Python script which converts mov files to gifs.
@@ -13,7 +14,8 @@ This repository contains many simple, but potentially useful bioinformatics scri
 - **`RemoveDups.py`**: Python script which takes a fasta file and removes sequences with duplicate names (keeping the first sequence it encounters).
 - **`RemoveStop.py`**: Python script which takes a transcriptome fasta and removes the last three base pairs (*i.e.*, stop codon).
 - **`RenameDups.py`**: Python script which takes a fasta file and searches for duplicate sequence IDs, adding a unique index if found.
-- **`SCP_Deliver.py`**: Python script that remembers scp formatting for you. 
+- **`SCP_Deliver.py`**: Python script that remembers scp formatting for you.
+- **`SortFasta.py`**: Python script to sort a fasta by either sequence names or length. 
 
 ## Stolen Scripts
 - **`Fasta_Renamer.py`**: Python script to rename fasta files sequentially. Stolen from Andrew Mason ([https://github.com/masonaj157](https://github.com/masonaj157))
