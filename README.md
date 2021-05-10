@@ -31,6 +31,8 @@ This repository contains many simple, but potentially useful bioinformatics scri
 - List file hosted on remote https
 	- `lftp -u username,password\!\! https://www.website.com`
 	- `du -a > manifest.txt`
+- Entrez Direct e-utils grab accession information
+	- `esearch -db sra -query SRR12915634 | esummary | xtract -pattern DocumentSummary -element Run@acc Experiment@acc Sample@acc Biosample Bioproject`
 
 ### Excel/Google Sheets
 - VLOOKUP concatenate multiple matches
