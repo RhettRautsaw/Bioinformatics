@@ -1,27 +1,155 @@
 # Bioinformatics
 ## Rhett M. Rautsaw
-This repository contains many simple, but potentially useful bioinformatics scripts as well as functions and resources for improving your skillset and performing really cool analyses.
+This repository contains bioinformatic advice along with many simple, but potentially useful bioinformatics scripts, functions, pipelines and resources for improving your skillset and performing really cool analyses.
 
-## Scripts
+# Table of Contents
+- [General Advice/Training](#general-advicetraining)
+- [Analysis Resources](#analysis-resources)
+	- [Personally Developed Pipelines](#personally-developed-pipelines)
+	- [Personally Developed Workshops/Tutorials](#personally-developed-workshopstutorials)
+	- [Personally Developed Scripts](#personally-developed-scripts)
+	- [Blatantly Plagarized Scripts](#blatantly-plagarized-scripts)
+	- [Misc. Functions](#misc-functions)
+	- [Additional Resources](#additional-resources)
 
-- **`Busco_cleaner.py`**: Python script that will test if the "multi_copy_busco_sequences" are actually multi-copy or if they are actually duplicates. If there is only one unique sequence, that sequence will moved to "single_copy_busco_sequences"
+# General Advice/Training
+If you are interested in learning bioinformatics, Unix, [Python](https://www.python.org/), or R then I recommend you check out the [Training.md]() document in this repository. In this document I have provided a variety of workshops and advice for how to become more proficient, efficient, and productive! Even if you have experience in bioinformatics, make sure to check out the section on [GNU-Parallel](https://www.gnu.org/software/parallel/sphinx.html#)! I love GNU-Parallel so much that I was even given a [GNU-Parallel t-shirt](https://gnuparallel.threadless.com/) as a gift. Nerdy? Yes, but that should also tell you how amazing this program is.
+
+Other than the [Training.md]() document, there is one piece of advice that I think is critical for being a good bioinformatician regardless of your level of experience...
+
+<center> <h2> STAY ORGANIZED </h2> </center>
+
+This is the \#1 piece of advice I give to everyone in bioinformatics. In fact, I would argue that organization is one of the most important skills you can have as a bioinformatician. So how do you do it? Well there are two main things I can tell you, but you have to find a system that works for you.
+
+First, I **HIGHLY** recommend that you keep well documented READMEs for each step you take and redos of a given analysis. I typically create my READMEs for each project I am working on. I create the READMEs in [RMarkdown](https://rmarkdown.rstudio.com/lesson-1.html) format in [RStudio](https://www.rstudio.com/products/rstudio/). This allows me to create code "chunks" to document `unix`, `python`, and `R` code. I can even run these code chunks from RStudio! I then knit them to a GitHub MarkDown document like this one you're currently reading in order to document my code openly for publication. You can see an example of this [here]().
+
+Second, keep your directories ordered and well-labeled. My directories follow a strict format to monitor what samples have what sequencing data associated with them as well as what has been done for each. I typically number my folders to keep track of the order in which I did things. This pattern carries across all my sequence processing regardless of whether it is RNA-Seq, WGS, or something else.
+
+| Folder | Description | 
+|--------|-------------|
+| `00_raw` | Raw data |
+| `01_concat` | Concatenated forward and reverse reads or multiple sequencing runs |
+| `02_trim` | Quality trimming with [Trim-Galore](https://github.com/FelixKrueger/TrimGalore) |
+| `03_merge` | Merging reads with [PEAR](https://cme.h-its.org/exelixis/web/software/pear/) |
+| `04_[assembler]` | All assemblies are started with the `04_` prefix and placed in their own folder. Assemblers include [trinity](https://github.com/trinityrnaseq/trinityrnaseq), [extender](https://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-13-312), [ngen](https://www.dnastar.com/manuals/seqman-ngen/17.0/en/topic/welcome-to-seqman-ngen), [masurca](https://github.com/alekseyzimin/masurca), [spades](https://github.com/ablab/spades), [hifiasm](https://hifiasm.readthedocs.io/en/latest/index.html), etc.| 
+| `05_final-assembly` | Assemblies with renamed headers (`Fasta_Renamer.py`)) and concatenated assemblies | 
+| `06_busco` | BUSCO runs on the final assemblies (typically only run on the Trinity assembly for RNA-seq) |
+| `07_[annotation]` | All annotation steps are started with the `07_` prefix and placed in their own folders. Annotatators include [toxcodan](https://github.com/pedronachtigall/ToxCodAn), [nontoxins](https://github.com/pedronachtigall/ToxCodAn/tree/master/Guide), [funannotate](https://funannotate.readthedocs.io/en/latest/index.html), [braker](https://github.com/Gaius-Augustus/BRAKER), etc. | 
+| `08_chimerakiller` | This step is typically only found in RNA-Seq data and is done to remove putatively chimeric sequences from the final annotation fasta. [ChimeraKiller](https://github.com/masonaj157/ChimeraKiller) | 
+| `09_cleaning` | Any cleaning steps done to the final annotated fasta are done here (*e.g.*, `CDS_filter.py`) | 
+| `99_mitosis` | Extraction of the mitochondrial genome using [MitoSIS](https://github.com/RhettRautsaw/MitoSIS) to check for contamination |
+| `99_finalome` | Folder containing the final assemblies/annotation files |
+
+**Example Directory Structure:**
+```
+Species-SampleNumber/
+└── DataType
+	└── TissueType
+		└── Date_Location_Sequencer_RunName_ReadLength
+			├── 00_raw
+			├── 01_concat
+			├── 02_trim
+			...
+
+Ctigr-CLP2741/
+├── RNA
+│   └── VG-B
+│  		└── 2019-03-15_CU_NextSeq_CLP03_150PE
+│  			├── 00_raw
+│  			├── 01_concat
+│  			├── 02_trim
+│  			├── 03_merge
+│  			...
+└── WGS
+	└── blood
+		├── 2018-11-15_UDel_PacBio_CLR
+		│   ├── 00_raw
+		│   ├── 01_concat
+		│   ├── 04_masurca
+		│	...
+		└── 2019-01-08_FSU_NovaSeq_DRR19-DRR20_150PE
+			├── 00_raw
+			├── 01_concat
+			├── 02_trim
+			...
+```
+
+# Analysis Resources
+## Personally Developed Scripted Pipelines
+These are pipelines I have developed or co-developed and formally scripted. These can generally be found on my other GitHub repositories.
+
+- [MitoSIS](https://github.com/RhettRautsaw/MitoSIS)
+	- Python script used to extract the mitochondrial genome using [MITGARD](https://github.com/pedronachtigall/MITGARD) and compare it to Genbank sequences to look for potential contamination.
+- [ToxCodAn](https://github.com/pedronachtigall/ToxCodAn)
+	- Python script used to annotate snake venom toxin genes using generalized Hidden Markov Models
+- [Hitchhiker's Guide to Venom Gland Transcriptomics](https://github.com/pedronachtigall/ToxCodAn/tree/master/Guide)
+	- Generalized pipeline for processing snake venom gland transcriptomic data including trimming, merging, assembly, annotation, chimera removal, clustering, expression estimation, visualization, and analysis. 
+- [autokuenm](https://github.com/RhettRautsaw/VenomMaps/tree/master/code/autokuenm)
+	- Unix-executable R script used to automatically construct Species Distribution Models (SDMs) with [kuenm](https://github.com/marlonecobos/kuenm) after preparing M-areas and partitioning occurrence records.
+- [PhyProbe](https://github.com/RhettRautsaw/PhyProbe)
+	- Python script used to extract phylogenomic loci from a variety of different sources such as RNA-Seq, WGS, Sequence Capture, etc. 
+
+## Personally Developed Workshops/Tutorials
+These are workshops/tutorials/pipelines I have put together, but have not formally scripted (yet). These may be found here or on my other GitHub repositories depending on the size of the required files and/or intensity of the subject matter. 
+
+- [GIS Tutorial](https://github.com/RhettRautsaw/GIS_Tutorial)
+	- [QGIS Tutorial](https://github.com/RhettRautsaw/GIS_Tutorial/blob/master/QGIS_Tutorial.md)
+	- [Spatial Data in R](https://github.com/RhettRautsaw/GIS_Tutorial/blob/master/R_Tutorial.md)
+- [PacBio HiFi Genomics]()
+	- General pipeline for assembling and annotating PacBio HiFi genomic data.
+- [TreePL Divergence Dating]()
+	- General pipeline for performing phylogenetic divergence dating with TreePL
+
+## Personally Developed Scripts
+These are minor scripts that may be useful, but don't warrant their own GitHub page or recognition as a full pipeline. These can be found within this repository. Most of the dependencies can be (and I would recommend that they are) installed with [Anaconda](https://www.anaconda.com/products/individual)/[Mamba](https://mamba.readthedocs.io/en/latest/) or with CRAN in [R](https://cran.r-project.org/).
+
+- **`bgb_to_treedata.R`**: Modified script to convert [BioGeoBEARS](http://phylo.wikidot.com/biogeobears) results into [treeio](https://yulab-smu.top/treedata-book/)- and [ggtree](https://yulab-smu.top/treedata-book/)-readable treedata. Original script by [RevGadgets/Cody Howard/Carrie M Tribble](https://github.com/revbayes/RevGadgets/issues/9) 
+	- Dependencies: [BioGeoBEARS](http://phylo.wikidot.com/biogeobears), [treeio](https://yulab-smu.top/treedata-book/), [RevGadgets](https://revbayes.github.io/tutorials/intro/revgadgets), [naniar](https://naniar.njtierney.com/)
+- **`ConcatAln.py`**: Modified Python script to concatenate a directory of gene alignments for phylogenetics. Original script from [Andrew Mason](https://github.com/masonaj157)
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages), [tqdm](https://github.com/tqdm/tqdm)
+- **`ConcatSNPs.py`**: Script will read a VCF and convert it to a concatenated fasta and nexus for input into SVDQuartets. It will produce separate sequences for each allele (i.e., Sample1_a1, Sample1_a2) and will include a partition to coalesce the two alleles together in SVDQuartets
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages), [PyVCF](https://pyvcf.readthedocs.io/en/latest/INTRO.html)
 - **`create_hyde_triples.R`**: R function to create a file of all possible triples for [HyDe](https://github.com/pblischak/HyDe). *triple* = parent_1 --> hybrid <-- parent_2
+	- Dependencies: NA
 - **`create_pairwise_combos.R`**: R function to create a file of all possible pairwise comparisons given vector of options.
-- **`gif_maker.py`**: Python script which converts mov files to gifs.
-- **`Linearize.py`**: Python script which takes multiline fasta and makes it a single-line fasta.
-- **`occ_cleaner.R`**: R function to clean occurrence records using range maps and a phylogeny. 
-	- Occurrence records which fall outside of their expected range are updated to the most closely related species with which they overlap, unless they are geographically close to the expected range. The function attempts to minimize phylogenetic and geographic distance. Records can be flagged for updated records with a phylogenetic divergence greater than a specific value. 
+	- Dependencies: NA
+- **`fqdump.py`**: Python script that acts as a wrapper for fastq-dump or fasterq-dump in order to get around their dumb default settings and to convert all quality scores to PHRED+33
+	- [Manual]()
+	- Depdendencies: [Python](https://www.python.org/), [sra-tools](https://github.com/ncbi/sra-tools), [pigz](https://zlib.net/pigz/), [bbmap](https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/)
+- **`gif_maker.py`**: Python script which converts mov files to gifs. This is useful for converting screen-recordings (done with macOS Quicktime) into gifs for GitHub pages (see my [QGIS Tutorial](https://github.com/RhettRautsaw/GIS_Tutorial/blob/master/QGIS_Tutorial.md))
+	- Dependencies: [Python](https://www.python.org/), [ffmpeg](https://ffmpeg.org/), [gifsicle](https://github.com/kohler/gifsicle)
+- **`Linearize.py`**: Python script which takes multiline fasta and makes it a single-line fasta and vice-versa.
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
+- **`MCL.py`**: Script to run a self-BLAST search and cluster sequences using a Markov Clustering. Currently designed to keep only the sequences in the largest cluster. **Need to modify to allow users to choose to keep all sequences or only largest cluster**
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages), [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=Download), [MCL](https://micans.org/mcl/)
+- **`PresAbsCheck.py`**: Modified Python script to check if transcripts are "present" based on read coverage across the transcript. Sequences with low coverage across a certain percentage of the transcript may be indicative of a misassemply or false-positive annotation. Default is to check for transcripts with <5x coverage for >10% of the total transcript length. 
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages), [Numpy](https://numpy.org/), [Pandas](https://pandas.pydata.org/), [dfply](https://github.com/kieferk/dfply), [bwa](https://github.com/lh3/bwa), [samtools](http://www.htslib.org/), [bedtools](https://bedtools.readthedocs.io/en/latest/).
+- **`RSEM_combiner.R`**: Unix-executable R script to combine RSEM results for multiple individuals into a single dataframe/csv
+	- Dependencies: [R argparse](https://cran.r-project.org/web/packages/argparse/vignettes/argparse.html), [readr](https://readr.tidyverse.org/), [stringr](https://stringr.tidyverse.org/), [tidyr](https://tidyr.tidyverse.org/), [dplyr](https://dplyr.tidyverse.org/), [data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html)
 - **`RemoveDups.py`**: Python script which takes a fasta file and removes sequences with duplicate names (keeping the first sequence it encounters).
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
+- **`RemoveSeqs.py`**: Python script which takes a fasta file and list of sequences and removes these sequences from the fasta.
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
 - **`RemoveStop.py`**: Python script which takes a transcriptome fasta and removes the last three base pairs (*i.e.*, stop codon).
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
 - **`RenameDups.py`**: Python script which takes a fasta file and searches for duplicate sequence IDs, adding a unique index if found.
-- **`SCP_Deliver.py`**: Python script that remembers scp formatting for you.
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
+- **`SCP_Deliver.py`**: This is the first Python script I ever wrote. All it does is remember that pesky `scp` formatting for you. Not really that useful, but it's nostalgic for me.
+	- Dependencies: NA
 - **`SortFasta.py`**: Python script to sort a fasta by either sequence names or length. 
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
+- **`Ungap.py`**: Python script to remove gaps from a fasta file/alignment.
+	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
 
-## Stolen Scripts
-- **`Fasta_Renamer.py`**: Python script to rename fasta files sequentially. Stolen from Andrew Mason ([https://github.com/masonaj157](https://github.com/masonaj157))
-- **`RemDupRemAmb.py`**: Python script to remove sequences with ambiguities or duplicates. Stolen from Andrew Mason ([https://github.com/masonaj157](https://github.com/masonaj157))
 
-## Functions
+## Blatantly Plagarized Scripts
+These are scripts that I have found useful, but I did not create them myself. I have also included them in this repository, but again...I did not write these. 
+
+- **`Fasta_Renamer.py`**: Python script to rename fasta files sequentially. Stolen from [Andrew Mason](https://github.com/masonaj157).
+- **`RemDupRemAmb.py`**: Python script to remove sequences with ambiguities or duplicates. Stolen from [Andrew Mason](https://github.com/masonaj157).
+
+## Misc. Functions
+These are functions that I have found useful over the years, but seem like they would be really easy to forget. So I've included them here. You might find them useful as well, but they are mostly here for me. 
 
 ### UNIX
 - Parallel Compress Directory:
@@ -35,24 +163,17 @@ This repository contains many simple, but potentially useful bioinformatics scri
 	- `esearch -db sra -query SRR12915634 | esummary | xtract -pattern DocumentSummary -element Run@acc Experiment@acc Sample@acc Biosample Bioproject`
 
 ### Excel/Google Sheets
+- VLOOKUP
+	- `=VLOOKUP(CELL, RANGE, COLUMN, FALSE)`
 - VLOOKUP concatenate multiple matches
 	- `ArrayFormula(TEXTJOIN("; ", TRUE, IF(A1=AnotherSheet!B:B, D:D, "")))`
 
-## Scripting Resources
-
-- [Scripting OS X](https://scriptingosx.com/witchcraft/)
-	- [Moving to zsh](https://scriptingosx.com/2019/06/moving-to-zsh/)
-	- [OhMyZsh](https://ohmyz.sh/)
-	- [Zsh Prompt Expansion](http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html)
-
-## Analysis Resources
-
+## Additional Resources
+- [Rhett's Starred GitHub Repositories](https://github.com/RhettRautsaw?tab=stars)
 - [Filtering SNPs](https://otagomohio.github.io/2019-06-11_GBS_EE/sessions/filteringSNPs.html)
 - [SNP Filtering Tutorial](http://www.ddocent.com/filtering/)
 - [Phyluce: Loci Harvesting](https://phyluce.readthedocs.io/en/latest/tutorial-four.html)
 - [PLWS: Phylogenomics from Low-coverage Whole-genome Sequencing](https://github.com/xtmtd/PLWS)
 - [Guide to Tmux](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/)
-- [ENMeval](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261)
-	- [Vignette](https://cran.r-project.org/web/packages/ENMeval/vignettes/ENMeval-vignette.html)
-- [kuenm](https://peerj.com/articles/6281/)
 - https://www.robertlanfear.com/blog/files/short_read_mappers.html
+
