@@ -13,9 +13,9 @@ This repository contains bioinformatic advice along with many simple, but potent
 	- [Additional Resources](#additional-resources)
 
 # General Advice/Training
-If you are interested in learning bioinformatics, Unix, [Python](https://www.python.org/), or R then I recommend you check out the [Training.md]() document in this repository. In this document I have provided a variety of workshops and advice for how to become more proficient, efficient, and productive! Even if you have experience in bioinformatics, make sure to check out the section on [GNU-Parallel](https://www.gnu.org/software/parallel/sphinx.html#)! I love GNU-Parallel so much that I was even given a [GNU-Parallel t-shirt](https://gnuparallel.threadless.com/) as a gift. Nerdy? Yes, but that should also tell you how amazing this program is.
+If you are interested in learning bioinformatics, Unix, [Python](https://www.python.org/), or R then I recommend you check out the [Training.md](https://github.com/RhettRautsaw/Bioinformatics/blob/master/Training.md) document in this repository. In this document I have provided a variety of workshops and advice for how to become more proficient, efficient, and productive! Even if you have experience in bioinformatics, make sure to check out the section on [GNU-Parallel](https://www.gnu.org/software/parallel/sphinx.html#)! I love GNU-Parallel so much that I was even given a [GNU-Parallel t-shirt](https://gnuparallel.threadless.com/) as a gift. Nerdy? Yes, but that should also tell you how amazing this program is.
 
-Other than the [Training.md]() document, there is one piece of advice that I think is critical for being a good bioinformatician regardless of your level of experience...
+Other than the [Training.md](https://github.com/RhettRautsaw/Bioinformatics/blob/master/Training.md) document, there is one piece of advice that I think is critical for being a good bioinformatician regardless of your level of experience...
 
 <center> <h2> STAY ORGANIZED </h2> </center>
 
@@ -95,9 +95,9 @@ These are workshops/tutorials/pipelines I have put together, but have not formal
 - [GIS Tutorial](https://github.com/RhettRautsaw/GIS_Tutorial)
 	- [QGIS Tutorial](https://github.com/RhettRautsaw/GIS_Tutorial/blob/master/QGIS_Tutorial.md)
 	- [Spatial Data in R](https://github.com/RhettRautsaw/GIS_Tutorial/blob/master/R_Tutorial.md)
-- [PacBio HiFi Genomics]()
+- [PacBio HiFi Genomics](https://github.com/RhettRautsaw/Bioinformatics/blob/master/tutorials/HiFi_Genomics.md)
 	- General pipeline for assembling and annotating PacBio HiFi genomic data.
-- [TreePL Divergence Dating]()
+- [TreePL Divergence Dating](https://github.com/RhettRautsaw/Bioinformatics/blob/master/tutorials/treePL.md)
 	- General pipeline for performing phylogenetic divergence dating with TreePL
 
 ## Personally Developed Scripts
@@ -114,7 +114,7 @@ These are minor scripts that may be useful, but don't warrant their own GitHub p
 - **`create_pairwise_combos.R`**: R function to create a file of all possible pairwise comparisons given vector of options.
 	- Dependencies: NA
 - **`fqdump.py`**: Python script that acts as a wrapper for fastq-dump or fasterq-dump in order to get around their dumb default settings and to convert all quality scores to PHRED+33
-	- [Manual]()
+	- [Manual](https://github.com/RhettRautsaw/Bioinformatics/blob/master/script_markdowns/fqdump.md)
 	- Depdendencies: [Python](https://www.python.org/), [sra-tools](https://github.com/ncbi/sra-tools), [pigz](https://zlib.net/pigz/), [bbmap](https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbmap-guide/)
 - **`gif_maker.py`**: Python script which converts mov files to gifs. This is useful for converting screen-recordings (done with macOS Quicktime) into gifs for GitHub pages (see my [QGIS Tutorial](https://github.com/RhettRautsaw/GIS_Tutorial/blob/master/QGIS_Tutorial.md))
 	- Dependencies: [Python](https://www.python.org/), [ffmpeg](https://ffmpeg.org/), [gifsicle](https://github.com/kohler/gifsicle)
