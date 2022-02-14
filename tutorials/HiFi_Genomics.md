@@ -166,15 +166,18 @@ funannotate annotate -i annotate --cpus 80
 #PBS -M rrautsa@g.clemson.edu
 
 module load anaconda3/2019.10-gcc/8.3.1
+source activate bio
+
 cd $PBS_O_WORKDIR
 
+# QUALITY CHECK & STATS
+NanoPlot -t 80 -o NanoPlot_res --fastq 2021-10-22_UDel_PacBio_HiFi-1/01_concat/Clepi-CLP2201_WGS_blood_hifi.fastq.gz 2021-11-12_UDel_PacBio_HiFi-2/01_concat/Clepi-CLP2201_WGS_blood_hifi.fastq.gz
 
 # 04 ASSEMBLE
 mkdir 04_hifiasm
 cd 04_hifiasm
 hifiasm -o Clepi-CLP2201_WGS_blood -t 80 2021-10-22_UDel_PacBio_HiFi-1/01_concat/Clepi-CLP2201_WGS_blood_hifi.fastq.gz 2021-11-12_UDel_PacBio_HiFi-2/01_concat/Clepi-CLP2201_WGS_blood_hifi.fastq.gz
 awk '/^S/{print ">"$2;print $3}' Clepi-CLP2201_WGS_blood.bp.p_ctg.gfa > Clepi-CLP2201_WGS_blood.p_ctg.fasta
-source activate bio
 bbstats -in=Clepi-CLP2201_WGS_blood.p_ctg.fasta &> Clepi-CLP2201_WGS_blood.p_ctg.fa.stats.txt
 source deactivate
 cd ..
