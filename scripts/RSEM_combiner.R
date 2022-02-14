@@ -68,8 +68,8 @@ parser$add_argument("-c", default=0,
 #========================#
 
 args = parser$parse_args()
-args$g="TOXIN"
-args$c=0.95
+# args$g="TOXIN"
+# args$c=0.95
 
 ## MAKE LIST OF FILES
 files = list.files(path=".", pattern=args$p)
