@@ -5,6 +5,12 @@
 
 This markdown document walks through the general pipeline followed for [PacBio HiFi](https://www.pacb.com/smrt-science/smrt-sequencing/hifi-reads-for-highly-accurate-long-read-sequencing/) genome assembly and annotation. I use our genome for *Crotalus lepidus* (Rock Rattlesnake; Clepi-CLP2201_WGS_blood) as an example. 
 
+# Quality Check and Stats
+We can use [NanoPlot](https://github.com/wdecoster/NanoPlot) to check out some general statisitics on our long-read data such as the average/median read lengths and N50 before assembly.
+```
+NanoPlot -t 80 -o NanoPlot_res --fastq Clepi-CLP2201_WGS_blood_hifi1.fastq.gz Clepi-CLP2201_WGS_blood_hifi2.fastq.gz
+```
+
 # Assembly
 After testing several methodologies including (*i.e.*, [HiCanu](https://github.com/marbl/canu), [Peregrine](https://github.com/cschin/peregrine-2021), [MaSuRCA](https://github.com/alekseyzimin/masurca), and [hifiasm](https://hifiasm.readthedocs.io/en/latest/index.html)), we chose to use [hifiasm](https://hifiasm.readthedocs.io/en/latest/index.html) as our primary assembler as it was both the fastest and produced the best assembly. 
 ```
