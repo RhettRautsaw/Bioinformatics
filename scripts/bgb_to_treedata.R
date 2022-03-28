@@ -64,8 +64,9 @@ bgb_to_treedata <- function(results_path, geo_data_path, tree_path, area_names =
   
   # make better labels
   tipranges <- getranges_from_LagrangePHYLIP(res[["inputs"]]$geogfn)
+  areas=getareas_from_tipranges_object(tipranges)
   geo <- res$inputs$all_geog_states_list_usually_inferred_from_areas_maxareas
-  geo_lab <- unlist(lapply(lapply(lapply(geo, function(x) x+1), as.character), paste0, collapse ="-"))
+  geo_lab <- unlist(lapply(lapply(lapply(geo, function(x) x+1), function(x) areas[x]), paste0, collapse ="-"))
   label_dict <- data.frame(lab_num_short = 1:length(geo), lab_letters = geo_lab)
   tmp<-split_n_sort(label_dict$lab_letters)
   label_dict <- label_dict[tmp,]

@@ -76,14 +76,14 @@ files = list.files(path=".", pattern=args$p)
 names = gsub(args$p, "", files)
 
 ## READ FILE 1
-merged = readr::read_delim(files[1], show_col_types = FALSE) %>% select(-`transcript_id(s)`, -FPKM)
-setnames(merged, old = c("expected_count","TPM"), new = c(paste0("COUNT_",names[1]), paste0("TPM_",names[1]))) #
+merged = readr::read_delim(files[1], show_col_types = FALSE) %>% select(-`transcript_id(s)`, -FPKM) %>% mutate(TPM10K=((TPM*nrow(.))/10^4))
+setnames(merged, old = c("expected_count","TPM","TPM10K"), new = c(paste0("COUNT_",names[1]), paste0("TPM_",names[1]), paste0("TPM10K_",names[1]))) #
 
 ## MERGE ALL OTHER FILES
 if(length(files)>1){
   for(i in 2:length(files)){
-    tmp = readr::read_delim(files[i], show_col_types = FALSE) %>% select(-`transcript_id(s)`, -FPKM, -length, -effective_length)
-    setnames(tmp, old = c("expected_count","TPM"), new = c(paste0("COUNT_",names[i]), paste0("TPM_",names[i]))) # 
+    tmp = readr::read_delim(files[i], show_col_types = FALSE) %>% select(-`transcript_id(s)`, -FPKM, -length, -effective_length) %>% mutate(TPM10K=((TPM*nrow(.))/10^4))
+    setnames(tmp, old = c("expected_count","TPM","TPM10K"), new = c(paste0("COUNT_",names[i]), paste0("TPM_",names[i]), paste0("TPM10K_",names[i]))) # 
     merged = merge(merged,tmp, by="gene_id")
   }
 }
@@ -92,8 +92,10 @@ if(length(files)>1){
 merged = merged[ , c(1,2,3,order(names(merged)[c(-1,-2,-3)])+3)]
 
 ## CALCULATE AVERAGE TPM
-TPM_columns = which(str_detect(names(merged),"TPM"))
+TPM_columns = which(str_detect(names(merged),"TPM_"))
 merged$TPM_average = rowMeans(merged[,TPM_columns])
+TPM10K_columns = which(str_detect(names(merged),"TPM10K_"))
+merged$TPM10K_average = rowMeans(merged[,TPM10K_columns])
 merged = merged %>% select(gene_id,length,effective_length,TPM_average,everything())
 
 if(args$g!="NA"){

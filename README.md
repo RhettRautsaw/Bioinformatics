@@ -161,6 +161,8 @@ These are functions that I have found useful over the years, but seem like they 
 	- `du -a > manifest.txt`
 - Entrez Direct e-utils grab accession information
 	- `esearch -db sra -query SRR12915634 | esummary | xtract -pattern DocumentSummary -element Run@acc Experiment@acc Sample@acc Biosample Bioproject`
+- Allow copy-pasting multiple lines in Python
+	- `echo "set enable-bracketed-paste off" >> ~/.inputrc`
 
 ### Excel/Google Sheets
 - VLOOKUP

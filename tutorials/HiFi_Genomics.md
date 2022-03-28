@@ -152,7 +152,7 @@ funannotate update -i annotate --cpus 80
 
 ```
 funannotate iprscan -i annotate -c 80 -m local --iprscan_path /zfs/venom/Rhett/bin/funannotate/interproscan/interproscan.sh
-funannotate annotate -i annotate --cpus 80
+funannotate annotate -i annotate --busco_db tetrapoda --cpus 80
 ```
 
 
