@@ -23,6 +23,11 @@ export R_MAX_VSIZE=32000000000
 alias palmetto="caffeinate ssh rrautsa@login.palmetto.clemson.edu"
 alias droplet="caffeinate ssh root@reptilerhett-droplet-1"
 
+# Add the following lines to ~/.ssh/config to allow multiple ssh logins 
+# without retyping password every time. Quick SSH!
+# ControlMaster auto
+# ControlPath ~/.ssh/control:%h:%p:%r
+
 # Alias Functions
 alias printline="eval printf %.0s* '{1..'"${COLUMNS:-$(tput cols)}"\}; echo"
 alias ll="ls -lh"

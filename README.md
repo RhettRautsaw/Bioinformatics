@@ -97,6 +97,8 @@ These are workshops/tutorials/pipelines I have put together, but have not formal
 	- [Spatial Data in R](https://github.com/RhettRautsaw/GIS_Tutorial/blob/master/R_Tutorial.md)
 - [PacBio HiFi Genomics](https://github.com/RhettRautsaw/Bioinformatics/blob/master/tutorials/HiFi_Genomics.md)
 	- General pipeline for assembling and annotating PacBio HiFi genomic data.
+- [Clemson's Palmetto HPC Cliffnotes](https://github.com/RhettRautsaw/Bioinformatics/blob/master/tutorials/PalmettoCliffnotes.md)
+	- The basics of how to efficiently use Clemson's Palmetto HPC
 - [TreePL Divergence Dating](https://github.com/RhettRautsaw/Bioinformatics/blob/master/tutorials/treePL.md)
 	- General pipeline for performing phylogenetic divergence dating with TreePL
 
@@ -145,7 +147,7 @@ These are minor scripts that may be useful, but don't warrant their own GitHub p
 ## Blatantly Plagarized Scripts
 These are scripts that I have found useful, but I did not create them myself. I have also included them in this repository, but again...I did not write these. 
 
-- **`Fasta_Renamer.py`**: Python script to rename fasta files sequentially. Stolen from [Andrew Mason](https://github.com/masonaj157).
+- **`FastaRenamer.py`**: Python script to rename fasta files sequentially. Stolen from [Andrew Mason](https://github.com/masonaj157).
 - **`RemDupRemAmb.py`**: Python script to remove sequences with ambiguities or duplicates. Stolen from [Andrew Mason](https://github.com/masonaj157).
 
 ## Misc. Functions
@@ -163,6 +165,11 @@ These are functions that I have found useful over the years, but seem like they 
 	- `esearch -db sra -query SRR12915634 | esummary | xtract -pattern DocumentSummary -element Run@acc Experiment@acc Sample@acc Biosample Bioproject`
 - Allow copy-pasting multiple lines in Python
 	- `echo "set enable-bracketed-paste off" >> ~/.inputrc`
+
+### REGEX 
+- Remove duplicated text (filter for unique)
+	- `perl -pe 's/\b(\w+)(?:,\s+\1\b)+/$1/g'`: Replace Duplicated Words when words are back to back. 
+	- `perl -pe 's/\b(\w+)\b\s*,\s*(?=.*\1)//g'`: Replace Duplicated words per line`
 
 ### Excel/Google Sheets
 - VLOOKUP
