@@ -12,6 +12,7 @@ import csv
 import subprocess as sp
 import gzip
 import re
+from tqdm import tqdm
 try:
 	import vcf
 except:
@@ -57,7 +58,7 @@ vcf_reader=vcf.Reader(open(input,'r'))
 print(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" ::: Creating Concatenated Dictionary :::")
 sample_dict=dict()
 sample_dict2=dict()
-for record in vcf_reader:
+for record in tqdm(vcf_reader):
 	for sample in record.samples:
 		key0=sample.sample.replace("-","_")
 		key1=sample.sample.replace("-","_")+"_1"
@@ -65,8 +66,12 @@ for record in vcf_reader:
 		if key1 not in sample_dict:
 			sample_dict[key1]=list()
 			sample_dict[key2]=list()
-		sample_dict[key1].extend(re.split('/|\|', sample.gt_bases)[0])
-		sample_dict[key2].extend(re.split('/|\|', sample.gt_bases)[1])
+		if sample.gt_bases != None:
+			sample_dict[key1].extend(re.split('/|\|', sample.gt_bases)[0])
+			sample_dict[key2].extend(re.split('/|\|', sample.gt_bases)[1])
+		else:
+			sample_dict[key1].extend('-')
+			sample_dict[key2].extend('-')
 		if key0 not in sample_dict2:
 			sample_dict2[key0]=[key1,key2]
 
