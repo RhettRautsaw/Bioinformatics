@@ -10,7 +10,6 @@ from tqdm import tqdm
 from Bio import SeqIO
 from Bio import AlignIO
 from Bio.Nexus import Nexus
-from Bio.Alphabet import IUPAC
 
 ############################################### ARGUMENTS
 
@@ -31,7 +30,7 @@ parser.add_argument("-o","--output",
 parser.add_argument("-d","--delimiter",
 					type=str,
 					default=".",
-					help="The delimiter that separates the unique part of a file from the non unique parts. For instance if your files are labelled by gene (e.g. CytB.fas, ND4.fas) the delimiter is . whereas if you files are L1_final.fas, L2_final.fas the delimiter is the _ . A caveat is that this script always assumes the unique part of the name is the first part of the name.")
+					help="The delimiter that separates the unique part of a file from the non unique parts. For instance if your files are labelled by gene (e.g. CytB.fas, ND4.fas) the delimiter is \".\" whereas if you files are L1_final.fas, L2_final.fas the delimiter is the \"_\". A caveat is that this script always assumes the unique part of the name is the first part of the name.")
 args=parser.parse_args()
 
 ############################################### SETUP
@@ -52,7 +51,7 @@ for file in tqdm(files):
 	filename = os.path.basename(file)
 	lociname = filename.split(delim)[0]
 	outfile = output + '/nexus/' + lociname + '.nex'
-	AlignIO.convert(file, type, outfile,'nexus',alphabet=IUPAC.ambiguous_dna)
+	AlignIO.convert(file, type, outfile,'nexus', molecule_type="DNA")
 	aln = AlignIO.read(file, type)
 	partitions.write(lociname + " = " + str(x) + "-" + str(x - 1 + aln.get_alignment_length())+";")
 	partitions.write("\n")
@@ -66,4 +65,4 @@ nexi =  [(locus, Nexus.Nexus(output + "/nexus/" + locus + ".nex")) for locus in 
 combined = Nexus.combine(nexi)
 combined.write_nexus_data(filename=open(output + "/concat.nex", 'w'))
 
-
+sp.call("perl -pi -e 's/charpartition combined.*\n//g' " + output + "/concat.nex", shell=True)
