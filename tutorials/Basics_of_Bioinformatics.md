@@ -37,7 +37,7 @@ Some other useful resources might be:
 - [Learn-Bioinformatics Resources](https://github.com/czbiohub/learn-bioinformatics)
 - [The macOS School of Terminal Witchcraft and Wizardry](https://scriptingosx.com/witchcraft/)
 
-# Lists and Loops
+# Lists, Loops, & Parallelization
 
 **Lists** are your *best friend* in coding. A list – very simply – is a file containing all the names or identifiers that you will want to **loop** through or process in [**parallel**](https://www.gnu.org/software/parallel/) (*e.g.*, one line for each of your samples). You can create a simple text file in **unix** with the command `nano list.txt` and save the file using keyboard shortcut `ctrl+o` and exit with `ctrl+x`. A list will look something like this:
 
@@ -58,18 +58,22 @@ Once you create a list, you can provide it to a `for loop` or to the [**`paralle
 
 ``` bash
 # For Loops will "loop" through your list one-by-one 
-# processing each the same way
+# processing each the same way. Importantly,
+# $i represents a variable that is overwritten
+# when one sample finishes and the next starts
 for i in $(cat list.txt)
 do echo ${i}
 done
 
 # GNU-Parallel or just parallel, will process items simultaneously.
 # In this example, parallel will process 3 items at a time.
+# Similar to $i above, the empty brackets {} represent a variable
+# where the sample is placed for processing
 parallel -a list.txt -j 3 "echo {}"
 ```
 
 ## GNU-Parallel
-
+[GNU-Parallel](https://www.gnu.org/software/parallel/) is an incredibly flexible program to process multiple samples simultaneously. For more information on how GNU-Parallel works and what you can do with it, check out my [Palmetto Cliffnotes tutorial](https://github.com/RhettRautsaw/Bioinformatics/blob/master/tutorials/PalmettoCliffnotes.md#gnu-parallel).
 
 
 # Piping and Regular Expressions

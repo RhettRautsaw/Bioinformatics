@@ -1,4 +1,7 @@
-# How to use Palmetto Cliffnotes
+# High Performance Computing Cliffnotes
+
+# PBS
+For this section, I will be using the Clemson University HPC -- Palmetto -- as an example.
 
 ## Login
 Logging into Palmetto is as easy as:
@@ -218,4 +221,64 @@ gene: 0001	seed: 003
 gene: 1000	seed: 098
 gene: 1000	seed: 099
 gene: 1000	seed: 100
+```
+
+
+# SLURM to PBS Translatio
+SLURM is actually very similar to PBS and is easily translatable. 
+
+## Resources:
+- https://slurm.schedmd.com/rosetta.pdf
+- https://wiki.rc.usf.edu/index.php/SLURM_Users
+- https://www.miamioh.edu/research/research-computing-support/services/hpc-cluster/sbatch-translation/
+- https://hpc.nih.gov/docs/pbs2slurm.html
+- https://www.nrel.gov/hpc/assets/pdfs/pbs-to-slurm-translation-sheet.pdf
+
+## Commands
+
+| PBS			| SLURM													| Description				|
+|---------------|-------------------------------------------------------|---------------------------|
+| qsub			| sbatch <script.slurm>									| Submit jobs				|
+| qsub -I		| srun <options> OR salloc <options> + srun <job_id>	| Start interactive job		|
+| qstat -j -u	| squeue <job_id> -u <user> --me						| Check Job Status			|
+| qdel			| scancel <job_id>										| Cancel Job				|
+| qstat -B		| sinfo													| Summary Status of Cluster	|
+
+
+| PBS Options		| SLURM Options							| Description					|
+|-------------------|---------------------------------------|-------------------------------|
+| #PBS				| #SBATCH								| Script Directive				|
+| -N 				| -J, --job-name=<job_name>				| Job Name						|
+| -l select/nodes=	| -N, --nodes=<count>					| Number of Nodes				|
+| -l ncpus/ppn=		| -n, --ntasks=<count>					| Number of Tasks to Perform	|
+| -l mem=			| --mem=<mem>gb							| Amount of memory per Node		|
+| -l walltime=		| -t, --time=<hh:mm:ss>					| Walltime						|
+| 					| -c, --cpus-per-task=<count>			| Number of CPUs per Node		|
+| -l mppnppn=		| --ntasks-per-node=<count>				| Number of Tasks per Node		|
+| -q				| -p, --partition=<queue>				| Queue 						|
+| -j oe				| default								| Join output/error				|
+| -M <email>		| --mail-user=<email>					| Email Address for abe			|
+| -m abe			| --mail-type=ALL						| Abort/Begin/End Emails		|
+| ~					| --workdir=<working_directory>			| Job Working Directory			|
+| $PBS_O_WORKDIR	| $SLURM_SUBMIT_DIR						| Directory of Job Submission	|
+| $PBS_NODEFILE		| $SLURM_JOB_NODELIST					| Allocated Node List			|
+| $PBS_ARRAY_INDEX	| $SLURM_ARRAY_TASK_ID					| Job Array Index				|
+|					| $SLURM_CPUS_PER_TASK or $SLURM_NTASKS	| Number of Cores/Processes		|
+
+
+## Example Translation
+```
+#PBS -N 01_assembly
+#PBS -l select=2:ncpus=24:mem=192gb,walltime=72:00:00
+#PBS -q margres_2020
+#PBS -j oe
+#PBS -M rautsaw@usf.edu
+#PBS -m abe
+```
+```
+#SBATCH -J 01_assembly
+#SBATCH -N 2 -n 24 --mem 192gb -t 72:00:00
+#SBATCH -p margres_2020 --qos margres20
+#SBATCH --mail-user rautsaw@usf.edu
+#SBATCH --mail-type ALL
 ```
