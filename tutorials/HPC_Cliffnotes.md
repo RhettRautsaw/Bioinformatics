@@ -277,7 +277,8 @@ SLURM is actually very similar to PBS and is easily translatable.
 ```
 ```
 #SBATCH -J 01_assembly
-#SBATCH -N 2 -n 24 --mem 192gb -t 72:00:00
+#SBATCH -o %x.o%j
+#SBATCH -N 2 --ntasks-per-node 24 --mem 0 -t 72:00:00
 #SBATCH -p margres_2020 --qos margres20
 #SBATCH --mail-user rautsaw@usf.edu
 #SBATCH --mail-type ALL
