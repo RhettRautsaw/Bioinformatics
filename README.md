@@ -154,6 +154,7 @@ These are minor scripts that may be useful, but don't warrant their own GitHub p
 	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
 - **`Ungap.py`**: Python script to remove gaps from a fasta file/alignment.
 	- Dependencies: [Biopython](https://biopython.org/wiki/Packages)
+- **`VCF_subsetR.R`**: Unix-executable R script designed to take a vcf/bcf file and subset it according to provided metadata
 
 <br><br>
 ***
