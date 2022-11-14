@@ -127,6 +127,9 @@ cat(paste0(Sys.time(), " ::: Reading and Filtering Metadata :::\n"))
 metad = read_delim(metad_path, delim="\t", show_col_types = FALSE)
 metad_filtr = metad %>% filter(!!parse_expr(filtr))
 metad_filtr_list = metad_filtr %>% pull(1)
+if(length(metad_filtr_list)==0){
+  quit()
+}
 write_delim(x = metad_filtr, 
             file = paste0(out_path,"/metadata.txt"),
             delim="\t")

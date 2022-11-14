@@ -9,7 +9,7 @@ Logging into Palmetto is as easy as:
 ssh USERNAME@login.palmetto.clemson.edu
 ```
 
-> Note that when you login in you are legitimately on what is called the `login` node. Absolutely no computation other than navigating folders, writing scripts, and submitting jobs should be done from the `login` node. To do actual computation, you should start an interactive job or write a script and submit it. 
+> Note that when you login you are legitimately on what is called the `login` node. Absolutely no computation other than navigating folders, writing scripts, and submitting jobs should be done from the `login` node. To do actual computation, you should start an interactive job or write a script and submit it. 
 
 ## Important Directories
 - `/home/USERNAME` or `~` 
@@ -236,50 +236,95 @@ SLURM is actually very similar to PBS and is easily translatable.
 
 ## Commands
 
-| PBS			| SLURM													| Description				|
-|---------------|-------------------------------------------------------|---------------------------|
-| qsub			| sbatch <script.slurm>									| Submit jobs				|
+| PBS 			| SLURM 						| Description |
+|-----------------------|-------------------------------------------------------|-------------------------------|
+| qsub			| sbatch <script.slurm>					| Submit jobs	|
 | qsub -I		| srun <options> OR salloc <options> + srun <job_id>	| Start interactive job		|
-| qstat -j -u	| squeue <job_id> -u <user> --me						| Check Job Status			|
-| qdel			| scancel <job_id>										| Cancel Job				|
-| qstat -B		| sinfo													| Summary Status of Cluster	|
+| qstat -j -u		| squeue <job_id> -u <user> --me			| Check Job Status		|
+| qdel			| scancel <job_id>					| Cancel Job	|
+| qstat -B		| sinfo							| Summary Status of Cluster	|
 
 
-| PBS Options		| SLURM Options							| Description					|
-|-------------------|---------------------------------------|-------------------------------|
-| #PBS				| #SBATCH								| Script Directive				|
-| -N 				| -J, --job-name=<job_name>				| Job Name						|
-| -l select/nodes=	| -N, --nodes=<count>					| Number of Nodes				|
-| -l ncpus/ppn=		| -n, --ntasks=<count>					| Number of Tasks to Perform	|
-| -l mem=			| --mem=<mem>gb							| Amount of memory per Node		|
-| -l walltime=		| -t, --time=<hh:mm:ss>					| Walltime						|
-| 					| -c, --cpus-per-task=<count>			| Number of CPUs per Node		|
-| -l mppnppn=		| --ntasks-per-node=<count>				| Number of Tasks per Node		|
-| -q				| -p, --partition=<queue>				| Queue 						|
-| -j oe				| default								| Join output/error				|
-| -M <email>		| --mail-user=<email>					| Email Address for abe			|
-| -m abe			| --mail-type=ALL						| Abort/Begin/End Emails		|
-| ~					| --workdir=<working_directory>			| Job Working Directory			|
-| $PBS_O_WORKDIR	| $SLURM_SUBMIT_DIR						| Directory of Job Submission	|
-| $PBS_NODEFILE		| $SLURM_JOB_NODELIST					| Allocated Node List			|
-| $PBS_ARRAY_INDEX	| $SLURM_ARRAY_TASK_ID					| Job Array Index				|
-|					| $SLURM_CPUS_PER_TASK or $SLURM_NTASKS	| Number of Cores/Processes		|
+| PBS Options		| SLURM Options						| Description	|
+|-----------------------|-------------------------------------------------------|-------------------------------|
+| #PBS			| #SBATCH						| Script Directive		|
+| -N 			| -J, --job-name=<job_name>				| Job Name	|
+| -l select/nodes=	| -N, --nodes=<count>					| Number of Nodes		|
+| -l ncpus/ppn=		| --ntasks-per-node=<count>				| Number of CPUs per Node	|
+| 			| -c, --cpus-per-task=<count>				| Number of CPUs per Task	|
+| 			| -n, --ntasks=<count> *auto-detect number of nodes	| Number of CPUs in Total	|
+| -l mem=		| --mem=<mem>gb						| Amount of Memory per Node	|
+|			| --mem-per-cpu/--mem-per-gpu				| Amount of Memory per CPU/GPU	|
+| -l walltime=		| -t, --time=<hh:mm:ss>					| Walltime	|
+| -q			| -p, --partition=<queue>				| Queue 	|
+|			| --qos=<queue>						| Quality of Service		|
+| -j oe			| <default>						| Join output/error		|
+| -M <email>		| --mail-user=<email>					| Email Address for abe		|
+| -m abe		| --mail-type=ALL					| Abort/Begin/End Emails	|
+| 			| --workdir=<working_directory>				| Job Working Directory		|
+| $PBS_O_WORKDIR	| $SLURM_SUBMIT_DIR					| Directory of Job Submission	|
+| $PBS_NODEFILE		| $SLURM_JOB_NODELIST					| Allocated Node List		|
+| $PBS_ARRAY_INDEX	| $SLURM_ARRAY_TASK_ID					| Job Array Index		|
+|			| $SLURM_CPUS_PER_TASK or $SLURM_NTASKS			| Number of Cores/Processes	|
 
 
-## Example Translation
+# Examples
+
+Lets write a script that selects 2 nodes each with 10 cpus and 20gb of RAM on the "margres_2020" partition
+
+After that, lets use GNU-Parallel to parallelize tasks with 1 job per node.
+
+## PBS Example
 ```
 #PBS -N 01_assembly
-#PBS -l select=2:ncpus=24:mem=192gb,walltime=72:00:00
+#PBS -l select=2:ncpus=10:mem=20gb,walltime=72:00:00
 #PBS -q margres_2020
 #PBS -j oe
 #PBS -M rautsaw@usf.edu
 #PBS -m abe
+
+# parallelize across list of samples with associated parameters in the 2nd column
+parallel -a list.txt -j 1 -k --colsep '\t' --workdir $PWD --sshloginfile $PBS_NODEFILE 'function --threads 10 {1} {2}'
+
+# parallelize across list of samples and all possible parameters
+parallel -a list_1.txt -a list_2.txt -j 1 -k --colsep '\t' --workdir $PWD --sshloginfile $SLURM_JOB_NODELIST 'function --threads 10 {1} {2}'
 ```
+
+## SLURM Example
 ```
 #SBATCH -J 01_assembly
 #SBATCH -o %x.o%j
-#SBATCH -N 2 --ntasks-per-node 24 --mem 0 -t 72:00:00
+#SBATCH -N 2 --ntasks-per-node 10 --mem 20gb -t 72:00:00
 #SBATCH -p margres_2020 --qos margres20
 #SBATCH --mail-user rautsaw@usf.edu
 #SBATCH --mail-type ALL
+
+# parallelize across list of samples with associated parameters in the 2nd column
+parallel -a list.txt -j 1 -k --colsep '\t' --workdir $PWD --sshloginfile $SLURM_JOB_NODELIST 'function --threads 10 {1} {2}'
+
+# parallelize across list of samples and all possible parameters
+parallel -a list_1.txt -a list_2.txt -j 1 -k --colsep '\t' --workdir $PWD --sshloginfile $SLURM_JOB_NODELIST 'function --threads 10 {1} {2}'
 ```
+
+## SLURM Example 2
+The example above was a very literal translation, but SLURM also has the ability to simply specify the number of CPUs
+and then auto-detect the number of nodes it requires. You can then parallelize by simply changing the number of jobs
+(-j) given to GNU-Parallel and threads given to any given function within parallel as follows:
+```
+#SBATCH -J 01_assembly
+#SBATCH -o %x.o%j
+#SBATCH -n 20 --mem 20gb -t 72:00:00
+#SBATCH -p margres_2020 --qos margres20
+#SBATCH --mail-user rautsaw@usf.edu
+#SBATCH --mail-type ALL
+
+# parallelize across list of samples with associated parameters in the 2nd column
+parallel -a list.txt -j 2 -k --colsep '\t' --workdir $PWD 'function --threads 10 {1} {2}'
+
+# parallelize across list of samples and all possible parameters
+parallel -a list_1.txt -a list_2.txt -j 2 -k --colsep '\t' --workdir $PWD 'function --threads 10 {1} {2}'
+```
+
+Note that here I simply specified `#SBATCH -n 20` and in parallel I specified `-j 2`, removed `--sshloginfile $SLURM_JOB_NODELIST`, and in the function I am running inside of parallel I 
+am giving the function `--threads 10`. As 2x10=20, this is functionally the same as specifying `-N 2 --ntasks-per-node 10`; however, by only specifying a total number of CPUs, in reality,
+we could have anything from "1 node x 20 cpus" to "20 nodes x 1 cpu". 
