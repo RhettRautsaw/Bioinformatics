@@ -54,7 +54,7 @@ if args.wrap==False:
 	handle.close()
 
 if args.wrap==True:
-	handle=open(fasta_name, "w")
+	handle=open(outfile, "w")
 	writer = FastaIO.FastaWriter(handle)
-	writer.write_file(fasta)
+	writer.write_file(records)
 	handle.close()

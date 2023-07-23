@@ -328,3 +328,5 @@ parallel -a list_1.txt -a list_2.txt -j 2 -k --colsep '\t' --workdir $PWD 'funct
 Note that here I simply specified `#SBATCH -n 20` and in parallel I specified `-j 2`, removed `--sshloginfile $SLURM_JOB_NODELIST`, and in the function I am running inside of parallel I 
 am giving the function `--threads 10`. As 2x10=20, this is functionally the same as specifying `-N 2 --ntasks-per-node 10`; however, by only specifying a total number of CPUs, in reality,
 we could have anything from "1 node x 20 cpus" to "20 nodes x 1 cpu". 
+
+--array=0-1000%16 # Run 1000 jobs 16 at a time.

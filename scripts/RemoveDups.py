@@ -32,7 +32,7 @@ outfile = outfile + "_noDups.fasta"
 fasta = list(SeqIO.parse(fasta_name,"fasta"))
 
 new_fasta=[]
-names=[]
+names={}
 for seq in fasta:
 	if seq.id not in names:
 		names.append(seq.id)
