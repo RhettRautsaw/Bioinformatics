@@ -30,8 +30,8 @@ except:
 
 parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter, description="""
 Script will read a VCF and convert it to a concatenated fasta and nexus for input into SVDQuartets. 
-It will produce separate sequences for each allele (i.e., Sample1_a1, Sample1_a2)
-and will include a partition to coalesce the two alleles together in SVDQuartets
+It is polyploid friendly and will produce separate sequences for each allele (i.e., Sample1_a1, Sample1_a2, Sample1_a3, etc.).
+and will include a partition to coalesce the alleles together per sample in SVDQuartets
 
 :: EXAMPLE ::
 ConcatSNPs.py -i example.vcf
@@ -56,29 +56,29 @@ print(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" ::: Reading VCF :::")
 vcf_reader=vcf.Reader(open(input,'r'))
 
 print(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" ::: Creating Concatenated Dictionary :::")
+allele_dict=dict()
 sample_dict=dict()
-sample_dict2=dict()
 for record in tqdm(vcf_reader):
 	for sample in record.samples:
 		key0=sample.sample.replace("-","_")
-		key1=sample.sample.replace("-","_")+"_1"
-		key2=sample.sample.replace("-","_")+"_2"
-		if key1 not in sample_dict:
-			sample_dict[key1]=list()
-			sample_dict[key2]=list()
-		if sample.gt_bases != None:
-			sample_dict[key1].extend(re.split('/|\|', sample.gt_bases)[0])
-			sample_dict[key2].extend(re.split('/|\|', sample.gt_bases)[1])
-		else:
-			sample_dict[key1].extend('-')
-			sample_dict[key2].extend('-')
-		if key0 not in sample_dict2:
-			sample_dict2[key0]=[key1,key2]
+		alleles=sample.ploidity
+		for i in range(alleles):
+			key=sample.sample.replace("-","_")+"_"+str(i+1)
+			if key not in allele_dict:
+				allele_dict[key]=list()
+			if sample.gt_bases != None:
+				allele_dict[key].extend(re.split('/|\|', sample.gt_bases)[i].replace("*","-"))
+			else:
+				allele_dict[key].extend('-')
+			if key0 not in sample_dict:
+				sample_dict[key0]=[key]
+			if key not in sample_dict[key0]:
+				sample_dict[key0].append(key)
 
 print(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" ::: Converting to Fasta :::")
 ofile = open(name + ".fasta", "w")
-for sample in sample_dict:
-	concat=''.join(sample_dict[sample])
+for sample in allele_dict:
+	concat=''.join(allele_dict[sample])
 	ofile.write(">" + sample + "\n" + concat + "\n")
 
 ofile.close()
@@ -86,8 +86,8 @@ ofile.close()
 print(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")+" ::: Converting to Nexus :::")
 AlignIO.convert(name+".fasta", "fasta", name+".nex", 'nexus', "DNA")
 n=Nexus.Nexus(name+".nex")
-n.taxpartitions={"samples": sample_dict2}
-n.taxsets={"samples": sample_dict2}
+n.taxpartitions={"samples": sample_dict}
+n.taxsets={"samples": sample_dict}
 n.write_nexus_data(name+".nex", interleave=False, append_sets=True, codons_block=False)
 
 sp.call("perl -pi -e 's/^taxset.*\n//g' " + name + ".nex", shell=True)
